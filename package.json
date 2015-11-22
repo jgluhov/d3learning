@@ -1,0 +1,23 @@
+{
+  "name": "d3learning",
+  "version": "0.0.1",
+  "description": "d3learning",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jgluhov/d3learning.git"
+  },
+  "keywords": [
+    "d3",
+    "learning"
+  ],
+  "author": "jgluhov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jgluhov/d3learning/issues"
+  },
+  "homepage": "https://github.com/jgluhov/d3learning#readme"
+}
