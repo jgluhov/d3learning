@@ -6,6 +6,7 @@ var browserSync = require('browser-sync').create();
 var browserify = require('gulp-browserify');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
+var plumber = require('gulp-plumber');
 
 gulp.task('vendor:js', function () {
   gulp.src([
@@ -30,6 +31,7 @@ gulp.task('vendor:css', function () {
 
 gulp.task('templates', function () {
   gulp.src('./src/jade/**/*.jade')
+    .pipe(plumber())
     .pipe(jade({pretty: true}))
     .pipe(gulp.dest('./www'))
     .pipe(browserSync.stream())
@@ -37,12 +39,14 @@ gulp.task('templates', function () {
 
 gulp.task('scripts', function () {
   gulp.src('./src/js/*.js')
+    .pipe(plumber())
     .pipe(browserify({insertGlobals: true}))
     .pipe(concat('app.js'))
     .pipe(gulp.dest('./www/js'))
     .pipe(uglify())
     .pipe(rename('app.min.js'))
     .pipe(gulp.dest('./www/js'))
+    .pipe(browserSync.stream())
 });
 
 gulp.task('serve', ['templates', 'scripts', 'vendor:js', 'vendor:css'], function () {
@@ -51,7 +55,7 @@ gulp.task('serve', ['templates', 'scripts', 'vendor:js', 'vendor:css'], function
       baseDir: "./www"
     }
   });
-
+  gulp.watch("src/js/**/*.js", ['scripts']);
   gulp.watch("src/jade/**/*.jade", ['templates']);
 });
 
