@@ -1,5 +1,7 @@
+'use strict';
+
 module.exports = function (app) {
-  app.directive('d3Bars', ['$window', '$timeout', 'd3Service', function ($window, $timeout, d3Service) {
+  app.directive('bars', ['$window', '$timeout', 'd3Service', function ($window, $timeout, d3Service) {
     return {
       restrict: 'EA',
       scope: {
@@ -39,7 +41,7 @@ module.exports = function (app) {
             // If we don't pass any data, return out of the element
             if (!data) return;
 
-            renderTimeout = $timeout(function () {
+            var renderTimeout = $timeout(function () {
               // setup variables
               var width = d3.select(element[0]).node().offsetWidth - margin,
               // calculate the height

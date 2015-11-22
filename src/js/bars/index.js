@@ -1,3 +1,5 @@
+'use strict';
+
 var app = angular.module('d3Bars',[]);
 
 require('./BarsService')(app);

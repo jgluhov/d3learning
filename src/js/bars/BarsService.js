@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function (app) {
   app.service('barsService', ['$http', function ($http) {
     var self = this;

@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function (app) {
   app.controller('barsController', ['$scope', 'barsService', function ($scope, homeService) {
     $scope.greeting = 'D3Bars example';
@@ -18,7 +20,7 @@ module.exports = function (app) {
         });
       });
 
-      for (key in wordFreq) {
+      for (var key in wordFreq) {
         data.push({
           name: key,
           score: wordFreq[key].score,

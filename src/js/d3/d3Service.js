@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function (app) {
   app.service('d3Service', ['$document', '$q', '$rootScope',
     function ($document, $q, $rootScope) {
