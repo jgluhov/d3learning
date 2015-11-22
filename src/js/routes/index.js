@@ -11,6 +11,11 @@ module.exports = function(app) {
             templateUrl: "templates/home.html",
             controller: "homeController"
           })
+          .state('bars', {
+            url: '/bars',
+            templateUrl: "templates/bars.html",
+            controller: "barsController"
+          })
       }
     ]
   );

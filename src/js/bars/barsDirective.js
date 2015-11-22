@@ -4,8 +4,7 @@ module.exports = function (app) {
       restrict: 'EA',
       scope: {
         data: '=', //bi-directional data-binding
-        onClick: '&',
-        label: '@'
+        onClick: '&'
       },
       link: function (scope, element, attrs) {
         d3Service.d3().then(function (d3) {
