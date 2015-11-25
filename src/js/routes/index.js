@@ -16,6 +16,11 @@ module.exports = function(app) {
             templateUrl: "templates/bars.html",
             controller: "barsController"
           })
+          .state('tags', {
+            url: '/tags',
+            templateUrl: "templates/tags.html",
+            controller: "tagsController"
+          })
       }
     ]
   );
