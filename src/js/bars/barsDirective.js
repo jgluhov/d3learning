@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (app) {
-  app.directive('bars', ['$window', '$timeout', 'd3Service', function ($window, $timeout, d3Service) {
+  app.directive('bars', ['$window', '$timeout', function ($window, $timeout) {
     return {
       restrict: 'EA',
       scope: {
@@ -9,7 +9,7 @@ module.exports = function (app) {
         onClick: '&'
       },
       link: function (scope, element, attrs) {
-        d3Service.d3().then(function (d3) {
+
           var margin = parseInt(attrs.margin) || 20,
             barHeight = parseInt(attrs.barHeight) || 20,
             barPadding = parseInt(attrs.barPadding) || 5;
@@ -93,7 +93,7 @@ module.exports = function (app) {
 
             if (renderTimeout) clearTimeout(renderTimeout);
           }
-        })
+
       }
     }
   }])
