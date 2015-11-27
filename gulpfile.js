@@ -17,7 +17,8 @@ gulp.task('vendor:js', function () {
     './bower_components/angular-ui-router/release/angular-ui-router.min.js',
     './bower_components/jquery/dist/jquery.min.js',
     './bower_components/uikit/js/uikit.min.js',
-    './bower_components/d3/d3.min.js'
+    './bower_components/d3/d3.min.js',
+    './bower_components/d3-cloud/build/d3.layout.cloud.js'
   ])
     .pipe(concat('vendor.min.js'))
     .pipe(gulp.dest('./www/js'))
