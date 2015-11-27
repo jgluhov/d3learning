@@ -64,6 +64,7 @@ gulp.task('styles', function () {
     .pipe(rename('app.min.css'))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('./www/css'))
+    .pipe(browserSync.stream())
 });
 
 gulp.task('vendor:fonts', function() {
@@ -74,7 +75,12 @@ gulp.task('vendor:fonts', function() {
     .pipe(gulp.dest('./www/fonts'))
 });
 
-gulp.task('serve', ['templates', 'scripts', 'styles','vendor:js', 'vendor:css','vendor:fonts'], function () {
+gulp.task('vendor:images', function() {
+  gulp.src('./src/images/**/*')
+    .pipe(gulp.dest('./www/images'))
+});
+
+gulp.task('serve', ['templates', 'scripts', 'styles','vendor:js', 'vendor:css','vendor:fonts','vendor:images'], function () {
   browserSync.init({
     server: {
       baseDir: "./www"

@@ -47,8 +47,14 @@ module.exports = function (app) {
               .style("padding-top", h/2 - 20 + "px")
               .style("width", "uk-width-8-10")
               .attr("class", "uk-container-center")
-              .html("<form class='uk-form uk-text-center'>" +
-              "<input class='uk-form-large uk-width-8-10' style='position: relative;' placeholder='How?'>" +
+              .html(
+              "<form class='uk-form uk-text-center'>" +
+              "<div class='uk-form-row uk-width-8-10 uk-container-center'>" +
+                "<div class='uk-form-icon' style='width: 100%;'>" +
+                  "<div class='uk-icon-hover uk-icon-at'></div>" +
+                  "<input class='uk-form-large' style='position: relative; width: 100%;' placeholder='How?'>" +
+                "</div>" +
+              "</div>" +
               "</form>");
 
             var layoutUp = d3.layout.cloud()
@@ -56,7 +62,7 @@ module.exports = function (app) {
               .words([
                 "perfect", "invulnerable", "sad", "depressing", "stubborn", "gratis", "fidgety",
                 "helpless", "cruel"].map(function(d) {
-                  return {text: '# ' + d.toLowerCase(), size: 18 + Math.random() * 5, test: "haha"};
+                  return {text: '# ' + d.toUpperCase(), size: 18 + Math.random() * 5, test: "haha"};
                 }))
               .padding(5)
               .rotate(function() { return 0; })
@@ -69,7 +75,7 @@ module.exports = function (app) {
               .words([
                 "stupid", "chaotic", "disaster", "angelic", "subconscious", "hypocritical", "harmonious",
                 "generous", "unnatural"].map(function(d) {
-                  return {text: '# ' + d.toLowerCase(), size: 18 + Math.random() * 5, test: "haha"};
+                  return {text: '# ' + d.toUpperCase(), size: 15 + Math.random() * 10, test: "haha"};
                 }))
               .padding(5)
               .rotate(function() { return 0; })
@@ -90,6 +96,7 @@ module.exports = function (app) {
                 .data(words)
                 .enter().append("text")
                 .style("font-size", function(d) { return d.size + "px"; })
+                .style("font-weight","100")
                 .style("font-family", "Ubuntu")
                 .style("fill", '#ffffff')
                 .style("opacity", 1e-6)
@@ -113,6 +120,7 @@ module.exports = function (app) {
                 .style("font-size", function(d) { return d.size + "px"; })
                 .style("font-family", "Ubuntu")
                 .style("fill", '#ffffff')
+                .style("font-weight","100")
                 .style("opacity", 1e-6)
                 .transition()
                 .duration(1000).style("opacity", 1)
