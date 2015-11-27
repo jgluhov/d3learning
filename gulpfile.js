@@ -66,7 +66,15 @@ gulp.task('styles', function () {
     .pipe(gulp.dest('./www/css'))
 });
 
-gulp.task('serve', ['templates', 'scripts', 'styles','vendor:js', 'vendor:css'], function () {
+gulp.task('vendor:fonts', function() {
+  gulp.src([
+      './bower_components/uikit/fonts/*',
+      './src/fonts/**/*'
+    ])
+    .pipe(gulp.dest('./www/fonts'))
+});
+
+gulp.task('serve', ['templates', 'scripts', 'styles','vendor:js', 'vendor:css', 'vendor:fonts'], function () {
   browserSync.init({
     server: {
       baseDir: "./www"

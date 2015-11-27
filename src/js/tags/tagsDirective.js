@@ -4,7 +4,9 @@ module.exports = function (app) {
   app.directive('tags', ['$window', '$timeout', function ($window, $timeout) {
     return {
       restrict: 'EA',
-      scope: {},
+      scope: {
+        source: '='
+      },
       link: function (scope, element, attrs) {
         var container = $('.tags-content');
         var svg = d3.select(element[0])
@@ -21,10 +23,10 @@ module.exports = function (app) {
 
         // hard-code data
         scope.data = [
-          {name: "Greg", value: "13" },
-          {name: "Ari", value: "13" },
-          {name: 'Q', value: "13"},
-          {name: "Loser", value: "13"}
+          {name: "Greg" },
+          {name: "Ari"},
+          {name: 'Q'},
+          {name: "Loser"}
         ];
 
         scope.render = function (data) {
@@ -39,33 +41,16 @@ module.exports = function (app) {
             // setup variables
             var w = container.innerWidth();
 
-            //var layout = d3.layout.cloud()
-            //  .timeInterval(Infinity).size([w,h])
-            //  .words(data)
-            //  .padding(5)
-            //  .font("Impact")
-            //  .fontSize(function(d) {
-            //    return d.value
-            //  })
-            //  .text(function(d) {
-            //    return d.name
-            //  })
-            //  .on("end", function(data) {
-            //    console.log(data)
-            //  }).start();
-
             var fill = d3.scale.category20();
 
             var layout = d3.layout.cloud()
               .size([w, h])
-              .words([
-                "Hello", "world", "normally", "you", "want", "more", "words",
-                "than", "this"].map(function(d) {
-                return {text: d, size: 18, test: "haha"};
+              .words(scope.data.map(function(d) {
+                return {text: '#' + d.name, size: 18 };
               }))
-              .padding(5)
+              .padding(10)
               .rotate(function() { return 0; })
-              .font("Impact")
+              .font("Ubuntu")
               .fontSize(function(d) { return d.size; })
               .on("end", draw);
 
@@ -81,9 +66,12 @@ module.exports = function (app) {
                 .data(words)
                 .enter().append("text")
                 .style("font-size", function(d) { return d.size + "px"; })
-                .style("font-family", "Impact")
+                .style("font-family", "Ubuntu")
                 .style("fill", '#ffffff')
-                .attr("text-anchor", "middle")
+                .style("opacity", 1e-9)
+                .transition()
+                .duration(1000)
+                .style("opacity", 1)
                 .attr("transform", function(d) {
                   return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
                 })
