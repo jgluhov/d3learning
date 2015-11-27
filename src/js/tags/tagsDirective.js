@@ -12,6 +12,8 @@ module.exports = function (app) {
           .style('width', '100%')
           .attr('class', 'svg-tags');
 
+        var h = container.innerHeight();
+
         // Browser onresize event
         $window.onresize = function () {
           scope.$apply();
@@ -27,14 +29,14 @@ module.exports = function (app) {
 
         scope.render = function (data) {
           // remove all previous items before render
-          svg.selectAll('*').remove();
+
           // If we don't pass any data, return out of the element
           if (!data) return;
 
 
           var renderTimeout = $timeout(function () {
+            svg.selectAll('*').remove();
             // setup variables
-            var h = container.innerHeight();
             var w = container.innerWidth();
 
             //var layout = d3.layout.cloud()
@@ -59,10 +61,10 @@ module.exports = function (app) {
               .words([
                 "Hello", "world", "normally", "you", "want", "more", "words",
                 "than", "this"].map(function(d) {
-                return {text: d, size: 10 + Math.random() * 90, test: "haha"};
+                return {text: d, size: 18, test: "haha"};
               }))
               .padding(5)
-              .rotate(function() { return ~~(Math.random() * 2) * 90; })
+              .rotate(function() { return 0; })
               .font("Impact")
               .fontSize(function(d) { return d.size; })
               .on("end", draw);
@@ -71,8 +73,8 @@ module.exports = function (app) {
 
             function draw(words) {
               svg
-                .attr("width", layout.size()[0])
-                .attr("height", layout.size()[1])
+                .attr("width", w)
+                .attr("height", h)
                 .append("g")
                 .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
                 .selectAll("text")
@@ -102,13 +104,13 @@ module.exports = function (app) {
         }, function (newVal, oldVal) {
           if(newVal !== oldVal) scope.render(scope.data);
         });
-
-        // Watch for resize event
-        scope.$watch(function () {
-          return angular.element($window)[0].innerHeight;
-        }, function (newVal, oldVal) {
-          if(newVal !== oldVal) scope.render(scope.data);
-        });
+        //
+        //// Watch for resize event
+        //scope.$watch(function () {
+        //  return angular.element($window)[0].innerHeight;
+        //}, function (newVal, oldVal) {
+        //  if(newVal !== oldVal) scope.render(scope.data);
+        //});
 
 
       }
