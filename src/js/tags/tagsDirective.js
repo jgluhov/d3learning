@@ -26,7 +26,13 @@ module.exports = function (app) {
           {name: "Greg" },
           {name: "Ari"},
           {name: 'Q'},
-          {name: "Loser"}
+          {name: "Loser"},
+          {name: "Mamba"},
+          {name: "samba"},
+          {name: "kamba"},
+          {name: "kamba"},
+          {name: "kamba"},
+          {name: "kamba"}
         ];
 
         scope.render = function (data) {
@@ -54,7 +60,7 @@ module.exports = function (app) {
               .fontSize(function(d) { return d.size; })
               .on("end", draw);
 
-            layout.start();
+            layout.start('.tags-content');
 
             function draw(words) {
               svg
@@ -76,6 +82,16 @@ module.exports = function (app) {
                   return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
                 })
                 .text(function(d) { return d.text; });
+
+              svg.append("foreignObject")
+                .attr("width", w)
+                .append("xhtml:body")
+                .style("padding-top", h/2 - 20 + "px")
+                .style("width", "uk-width-8-10")
+                .attr("class", "uk-container-center")
+                .html("<form class='uk-form uk-text-center'>" +
+                  "<input class='uk-form-large uk-width-8-10' id='inputCloud' placeholder='How?'>" +
+                  "</form>")
             }
             // Code here
 
