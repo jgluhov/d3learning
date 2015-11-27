@@ -7,6 +7,9 @@ var browserify = require('gulp-browserify');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var plumber = require('gulp-plumber');
+var stylus = require('gulp-stylus');
+var koutoSwiss = require('kouto-swiss');
+var minify = require('gulp-minify-css');
 
 gulp.task('vendor:js', function () {
   gulp.src([
@@ -49,7 +52,19 @@ gulp.task('scripts', function () {
     .pipe(browserSync.stream())
 });
 
-gulp.task('serve', ['templates', 'scripts', 'vendor:js', 'vendor:css'], function () {
+gulp.task('styles', function () {
+  gulp.src('./src/styl/app.styl')
+    .pipe(plumber())
+    .pipe(stylus({use: koutoSwiss(), import: 'kouto-swiss'}))
+    .pipe(gulp.dest('./www/css'))
+    .pipe(sourcemaps.init())
+    .pipe(minify())
+    .pipe(rename('app.min.css'))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('./www/css'))
+});
+
+gulp.task('serve', ['templates', 'scripts', 'styles','vendor:js', 'vendor:css'], function () {
   browserSync.init({
     server: {
       baseDir: "./www"
@@ -57,6 +72,7 @@ gulp.task('serve', ['templates', 'scripts', 'vendor:js', 'vendor:css'], function
   });
   gulp.watch("src/js/**/*.js", ['scripts']);
   gulp.watch("src/jade/**/*.jade", ['templates']);
+  gulp.watch('./src/styl/**/*.styl', ['styles']);
 });
 
 gulp.task('default', ['serve']);
