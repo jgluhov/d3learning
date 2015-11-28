@@ -18,7 +18,10 @@ gulp.task('vendor:js', function () {
     './bower_components/jquery/dist/jquery.min.js',
     './bower_components/uikit/js/uikit.min.js',
     './bower_components/d3/d3.min.js',
-    './bower_components/d3-cloud/build/d3.layout.cloud.js'
+    './bower_components/d3-cloud/build/d3.layout.cloud.js',
+    './bower_components/ng-resize/dist/ng-resize.min.js',
+    './bower_components/lodash/lodash.min.js',
+    './bower_components/ng-debounce/angular-debounce.js'
   ])
     .pipe(concat('vendor.min.js'))
     .pipe(gulp.dest('./www/js'))

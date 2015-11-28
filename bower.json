@@ -24,6 +24,11 @@
     "angular-ui-router": "ui-router#~0.2.15",
     "uikit": "~2.23.0",
     "d3": "~3.5.9",
-    "d3-cloud": "https://github.com/jasondavies/d3-cloud.git#~1.2.1"
+    "d3-cloud": "https://github.com/jasondavies/d3-cloud.git#~1.2.1",
+    "ng-resize": "https://github.com/danmasta/ng-resize.git#~1.2.0",
+    "ng-debounce": "~0.1.7"
+  },
+  "devDependencies": {
+    "lodash": "~3.10.1"
   }
 }
