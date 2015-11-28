@@ -29,14 +29,28 @@ module.exports = function (app) {
         svg.append("g").attr("class", "down");
 
 
-        scope.$on('resize', function($event){
-          _.defer(function() {
+        function debouncer( func , timeout ) {
+          var timeoutID , timeout = timeout || 300;
+          return function () {
+            var scope = this , args = arguments;
+            clearTimeout( timeoutID );
+            timeoutID = setTimeout( function () {
+              func.apply( scope , Array.prototype.slice.call( args ) );
+            } , timeout );
+          }
+        }
+
+
+        scope.$on('resize', debouncer(function($event){
+
             scope.source().then(function(data) {
               scope.render(data);
             });
-          }, 'deferred');
+
           scope.setDimensions($event);
-        });
+        }));
+
+
 
         // hard-code data
         scope.data = [
