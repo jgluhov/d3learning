@@ -30,9 +30,11 @@ module.exports = function (app) {
 
 
         scope.$on('resize', function($event){
-          scope.source().then(function(data) {
-            scope.render(data);
-          });
+          _.defer(function() {
+            scope.source().then(function(data) {
+              scope.render(data);
+            });
+          }, 'deferred');
           scope.setDimensions($event);
         });
 
