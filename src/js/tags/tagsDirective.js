@@ -88,7 +88,7 @@ module.exports = function (app) {
               var layoutUp = d3.layout.cloud()
                 .size([w, 100])
                 .words(data[0].map(function (d) {
-                  return {text: '# ' + d.name.toUpperCase(), size: 15 + Math.random() * 15, power: random(-10, 10)};
+                  return {text: '# ' + d.name.toUpperCase(), size: 15 + Math.random() * 15, power: d.power};
                 }))
                 .padding(5)
                 .rotate(function () {
@@ -140,7 +140,7 @@ module.exports = function (app) {
               var layoutDown = d3.layout.cloud()
                 .size([w, 100])
                 .words(data[1].map(function (d) {
-                  return {text: '# ' + d.name.toUpperCase(), size: 15 + Math.random() * 10, power: random(-10, 10)};
+                  return {text: '# ' + d.name.toUpperCase(), size: 15 + Math.random() * 10, power: d.power};
                 }))
                 .padding(5)
                 .rotate(function () {
@@ -193,7 +193,7 @@ module.exports = function (app) {
             };
 
             if (angular.isDefined(scope.data) && scope.data.length > 2) {
-              scope.render(scope.data);
+              scope.render(_.shuffle(scope.data));
             } else {
               scope.source().then(function (data) {
                 scope.render(data);
