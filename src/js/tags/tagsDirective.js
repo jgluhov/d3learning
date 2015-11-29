@@ -14,6 +14,13 @@ module.exports = function (app) {
             onHover: "&",
             onSearch: "&"
           },
+          controller: function($scope) {
+            $scope.mytags = '';
+            $scope.changeMyTags = function() {
+              console.log($scope.mytags)
+            }
+          }
+          ,
           link: function (scope, element, attrs) {
             var svg = d3.select(element[0])
               .append("svg")
@@ -33,6 +40,11 @@ module.exports = function (app) {
                   func.apply(scope, Array.prototype.slice.call(args));
                 }, timeout);
               }
+            }
+
+            scope.mytags = '';
+            scope.changeMyTags = function() {
+              console.log(scope.mytags)
             }
 
             // Browser onresize event
@@ -62,8 +74,9 @@ module.exports = function (app) {
                 .append("xhtml:body")
                 .style("padding-top", h / 2 - 20 + "px")
                 .style("width", "uk-width-8-10")
-                .attr("class", "uk-container-center")
-                .html($templateCache.get('cloud-input-template'));
+                .attr("class", "uk-container-center");
+
+              element.find('body').append($compile($templateCache.get('cloud-input-template'))(scope));
 
               var layoutUp = d3.layout.cloud()
                 .size([w, 100])
