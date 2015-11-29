@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('d3Tags',['ngResize','debounce']);
+var app = angular.module('d3Tags',[]);
 
 require('./tagsTemplate')(app);
 require('./tagsDirective')(app);

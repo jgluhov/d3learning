@@ -7,7 +7,17 @@ module.exports = function (app) {
       return $http.get(constants.production + 'emotions?lang_code=en&limit=10&token=' + constants.token).then(function(res) {
         return res.data;
       })
-    }
+    };
+
+    $scope.myOnClickFunction = function(element) {
+      console.log(element)
+    };
+
+    $scope.myOnHoverFunction = function(element) {
+      console.log(element)
+    };
+
+
 
   }]);
 };
