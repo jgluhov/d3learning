@@ -9,23 +9,24 @@ module.exports = function (app) {
           restrict: 'EA',
           scope: {
             source: '&',
+            data: '=',
             // EventCallbacks
             onClick: "&",
             onHover: "&",
             onSearch: "&"
           },
-          controller: function($scope) {
+          controller: function ($scope) {
             $scope.tags = '';
 
-            $scope.change = function(text) {
+            $scope.change = function (text) {
               console.log(text)
             };
 
-            $scope.search = function(text) {
+            $scope.search = function (text) {
               console.log(text)
             };
 
-            $scope.click = function(tag) {
+            $scope.click = function (tag) {
               var tags = $scope.tags.split(',')
               tags.push(tag.trim("#"));
               console.log(tags)
@@ -65,7 +66,7 @@ module.exports = function (app) {
               // If we don't pass any data, return out of the element
               if (!data) return;
 
-              data = data.chunk(data.length / 2);
+              data = _.chunk(data, data.length / 2);
 
               var w = element.parent()[0].clientWidth;
               var h = element.parent()[0].clientHeight;
@@ -84,16 +85,19 @@ module.exports = function (app) {
 
               element.find('body').append($compile($templateCache.get('cloud-input-template'))(scope));
 
-
               var layoutUp = d3.layout.cloud()
                 .size([w, 100])
                 .words(data[0].map(function (d) {
                   return {text: '# ' + d.name.toUpperCase(), size: 15 + Math.random() * 15, power: random(-10, 10)};
                 }))
                 .padding(5)
-                .rotate(function () { return 0; })
+                .rotate(function () {
+                  return 0;
+                })
                 .font("Ubuntu")
-                .fontSize(function (d) { return d.size; })
+                .fontSize(function (d) {
+                  return d.size;
+                })
                 .on("end", drawUp);
 
               function drawUp(words) {
@@ -105,22 +109,32 @@ module.exports = function (app) {
                   .selectAll("text")
                   .data(words)
                   .enter().append("text")
-                  .style("font-size", function (d) { return d.size + "px"; })
+                  .style("font-size", function (d) {
+                    return d.size + "px";
+                  })
                   .style("font-family", "Ubuntu")
-                  .style("fill", function (d) { return d.power >= 0 ? '#ffffff' : '#faab9d'; })
+                  .style("fill", function (d) {
+                    return d.power >= 0 ? '#ffffff' : '#faab9d';
+                  })
                   .on("click", function (d) {
                     scope.click(d);
                     scope.onClick({element: d});
                   })
-                  .on("mouseover", function (d) { scope.onHover({element: d}); })
+                  .on("mouseover", function (d) {
+                    scope.onHover({element: d});
+                  })
                   .style("cursor", "pointer")
                   .style("font-weight", "100")
                   .style("opacity", 1e-6)
                   .transition()
                   .duration(1000).style("opacity", 1)
                   .attr("text-anchor", "middle")
-                  .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
-                  .text(function (d) { return d.text; })
+                  .attr("transform", function (d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                  })
+                  .text(function (d) {
+                    return d.text;
+                  })
               }
 
               var layoutDown = d3.layout.cloud()
@@ -129,9 +143,13 @@ module.exports = function (app) {
                   return {text: '# ' + d.name.toUpperCase(), size: 15 + Math.random() * 10, power: random(-10, 10)};
                 }))
                 .padding(5)
-                .rotate(function () { return 0; })
+                .rotate(function () {
+                  return 0;
+                })
                 .font("Ubuntu")
-                .fontSize(function (d) { return d.size; })
+                .fontSize(function (d) {
+                  return d.size;
+                })
                 .on("end", drawDown);
 
               function drawDown(words) {
@@ -143,30 +161,44 @@ module.exports = function (app) {
                   .selectAll("text")
                   .data(words)
                   .enter().append("text")
-                  .style("font-size", function (d) { return d.size + "px"; })
+                  .style("font-size", function (d) {
+                    return d.size + "px";
+                  })
                   .style("font-family", "Ubuntu")
-                  .style("fill", function (d) { return d.power >= 0 ? '#ffffff' : '#faab9d'; })
-                  .on("click", function (d) { scope.onClick({element: d}); })
-                  .on("mouseover", function (d) { scope.onHover({element: d}); })
+                  .style("fill", function (d) {
+                    return d.power >= 0 ? '#ffffff' : '#faab9d';
+                  })
+                  .on("click", function (d) {
+                    scope.onClick({element: d});
+                  })
+                  .on("mouseover", function (d) {
+                    scope.onHover({element: d});
+                  })
                   .style("cursor", "pointer")
                   .style("font-weight", "100")
                   .style("opacity", 1e-6)
                   .transition()
                   .duration(1000).style("opacity", 1)
                   .attr("text-anchor", "middle")
-                  .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
-                  .text(function (d) { return d.text; })
+                  .attr("transform", function (d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                  })
+                  .text(function (d) {
+                    return d.text;
+                  })
               }
 
               layoutUp.start();
               layoutDown.start();
-
-              console.log(data);
             };
 
-            scope.source().then(function (data) {
-              scope.render(data);
-            });
+            if (angular.isDefined(scope.data) && scope.data.length > 2) {
+              scope.render(scope.data);
+            } else {
+              scope.source().then(function (data) {
+                scope.render(data);
+              });
+            }
 
             Array.prototype.chunk = function (n) {
               if (!this.length) {
