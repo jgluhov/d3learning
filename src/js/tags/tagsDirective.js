@@ -27,9 +27,11 @@ module.exports = function (app) {
             };
 
             $scope.click = function (tag) {
-              var tags = $scope.tags.split(',')
-              tags.push(tag.trim("#"));
-              console.log(tags)
+              var tags = $scope.tags.split(',');
+              var text = _.trim(tag.text, '# ').toLowerCase();
+              $scope.$apply(function() {
+                $scope.tags = text
+              })
             }
           }
           ,
@@ -143,13 +145,9 @@ module.exports = function (app) {
                   return {text: '# ' + d.name.toUpperCase(), size: 15 + Math.random() * 10, power: d.power};
                 }))
                 .padding(5)
-                .rotate(function () {
-                  return 0;
-                })
+                .rotate(function () { return 0; })
                 .font("Ubuntu")
-                .fontSize(function (d) {
-                  return d.size;
-                })
+                .fontSize(function (d) { return d.size; })
                 .on("end", drawDown);
 
               function drawDown(words) {
@@ -169,6 +167,7 @@ module.exports = function (app) {
                     return d.power >= 0 ? '#ffffff' : '#faab9d';
                   })
                   .on("click", function (d) {
+                    scope.click(d);
                     scope.onClick({element: d});
                   })
                   .on("mouseover", function (d) {
@@ -198,17 +197,6 @@ module.exports = function (app) {
               scope.source().then(function (data) {
                 scope.render(data);
               });
-            }
-
-            Array.prototype.chunk = function (n) {
-              if (!this.length) {
-                return [];
-              }
-              return [this.slice(0, n)].concat(this.slice(n).chunk(n));
-            };
-
-            function random(min, max) {
-              return Math.floor(Math.random() * (max - min + 1)) + min
             }
           }
         }
