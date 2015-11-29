@@ -10,7 +10,6 @@ module.exports = function (app) {
     };
 
     $scope.clickTag = function(element) {
-
       console.log(element)
     };
 

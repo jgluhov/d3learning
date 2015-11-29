@@ -15,9 +15,14 @@ module.exports = function (app) {
             onSearch: "&"
           },
           controller: function($scope) {
-            $scope.mytags = '';
-            $scope.changeMyTags = function() {
-              console.log($scope.mytags)
+            $scope.tags = '';
+
+            $scope.change = function(text) {
+              console.log(text)
+            };
+
+            $scope.search = function(text) {
+              console.log(text)
             }
           }
           ,
@@ -40,11 +45,6 @@ module.exports = function (app) {
                   func.apply(scope, Array.prototype.slice.call(args));
                 }, timeout);
               }
-            }
-
-            scope.mytags = '';
-            scope.changeMyTags = function() {
-              console.log(scope.mytags)
             }
 
             // Browser onresize event
@@ -77,6 +77,7 @@ module.exports = function (app) {
                 .attr("class", "uk-container-center");
 
               element.find('body').append($compile($templateCache.get('cloud-input-template'))(scope));
+
 
               var layoutUp = d3.layout.cloud()
                 .size([w, 100])
@@ -161,6 +162,7 @@ module.exports = function (app) {
               var input = element.find('input');
 
             };
+
 
             scope.source().then(function (data) {
               scope.render(data);
