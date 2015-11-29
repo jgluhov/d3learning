@@ -23,6 +23,12 @@ module.exports = function (app) {
 
             $scope.search = function(text) {
               console.log(text)
+            };
+
+            $scope.click = function(tag) {
+              var tags = $scope.tags.split(',')
+              tags.push(tag.trim("#"));
+              console.log(tags)
             }
           }
           ,
@@ -103,7 +109,7 @@ module.exports = function (app) {
                   .style("font-family", "Ubuntu")
                   .style("fill", function (d) { return d.power >= 0 ? '#ffffff' : '#faab9d'; })
                   .on("click", function (d) {
-                    scope.addInput(d);
+                    scope.click(d);
                     scope.onClick({element: d});
                   })
                   .on("mouseover", function (d) { scope.onHover({element: d}); })
@@ -157,12 +163,6 @@ module.exports = function (app) {
 
               console.log(data);
             };
-
-            scope.addInput = function(d) {
-              var input = element.find('input');
-
-            };
-
 
             scope.source().then(function (data) {
               scope.render(data);
