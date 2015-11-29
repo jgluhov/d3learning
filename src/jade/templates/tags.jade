@@ -2,4 +2,4 @@
   h1(ng-bind="greeting")
 
 .tags-content
-  tags(source='loadTags()' on-click="myOnClickFunction(element)" on-hover="myOnHoverFunction(element)")
+  tags(source='loadTags()' on-click="clickTag(element)" on-hover="hoverTag(element)" on-search='searchTag(text)')

@@ -11,7 +11,8 @@ module.exports = function (app) {
             source: '&',
             // EventCallbacks
             onClick: "&",
-            onHover: "&"
+            onHover: "&",
+            onSearch: "&"
           },
           link: function (scope, element, attrs) {
             var svg = d3.select(element[0])
@@ -75,6 +76,33 @@ module.exports = function (app) {
                 .fontSize(function (d) { return d.size; })
                 .on("end", drawUp);
 
+              function drawUp(words) {
+                d3.select(".tags > .down")
+                  .attr("width", layoutUp.size()[0])
+                  .attr("height", layoutUp.size()[1])
+                  .append("g")
+                  .attr("transform", "translate(" + layoutUp.size()[0] / 2 + "," + (layoutUp.size()[1] / 2 + layoutUp.size()[1] / 4) + ")")
+                  .selectAll("text")
+                  .data(words)
+                  .enter().append("text")
+                  .style("font-size", function (d) { return d.size + "px"; })
+                  .style("font-family", "Ubuntu")
+                  .style("fill", function (d) { return d.power >= 0 ? '#ffffff' : '#faab9d'; })
+                  .on("click", function (d) {
+                    scope.addInput(d);
+                    scope.onClick({element: d});
+                  })
+                  .on("mouseover", function (d) { scope.onHover({element: d}); })
+                  .style("cursor", "pointer")
+                  .style("font-weight", "100")
+                  .style("opacity", 1e-6)
+                  .transition()
+                  .duration(1000).style("opacity", 1)
+                  .attr("text-anchor", "middle")
+                  .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+                  .text(function (d) { return d.text; })
+              }
+
               var layoutDown = d3.layout.cloud()
                 .size([w, 100])
                 .words(data[1].map(function (d) {
@@ -85,36 +113,6 @@ module.exports = function (app) {
                 .font("Ubuntu")
                 .fontSize(function (d) { return d.size; })
                 .on("end", drawDown);
-
-              function drawUp(words) {
-                  d3.select(".tags > .down")
-                    .attr("width", layoutUp.size()[0])
-                    .attr("height", layoutUp.size()[1])
-                    .append("g")
-                    .attr("transform", "translate(" + layoutUp.size()[0] / 2 + "," + (layoutUp.size()[1] / 2 + layoutUp.size()[1] / 4) + ")")
-                    .selectAll("text")
-                    .data(words)
-                    .enter().append("text")
-                    .style("font-size", function (d) { return d.size + "px"; })
-                    .style("font-family", "Ubuntu")
-                    .style("fill", function (d) { return d.power >= 0 ? '#ffffff' : '#faab9d'; })
-                    .on("click",function(d){
-                      scope.onClick({element: d});
-                    })
-                    .on("mouseover",function(d){
-                      scope.onHover({element: d});
-                    })
-                    .style("cursor", "pointer")
-                    .style("font-weight", "100")
-                    .style("opacity", 1e-6)
-                    .transition()
-                    .duration(1000).style("opacity", 1)
-                    .attr("text-anchor", "middle")
-                    .attr("transform", function (d) {
-                      return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                    })
-                    .text(function (d) { return d.text; })
-              }
 
               function drawDown(words) {
                 d3.select(".tags > .down")
@@ -128,30 +126,27 @@ module.exports = function (app) {
                   .style("font-size", function (d) { return d.size + "px"; })
                   .style("font-family", "Ubuntu")
                   .style("fill", function (d) { return d.power >= 0 ? '#ffffff' : '#faab9d'; })
-                  .on("click",function(d){
-                    scope.onClick({element: d});
-                  })
-                  .on("mouseover",function(d){
-                    scope.onHover({element: d});
-                  })
+                  .on("click", function (d) { scope.onClick({element: d}); })
+                  .on("mouseover", function (d) { scope.onHover({element: d}); })
                   .style("cursor", "pointer")
                   .style("font-weight", "100")
                   .style("opacity", 1e-6)
                   .transition()
                   .duration(1000).style("opacity", 1)
                   .attr("text-anchor", "middle")
-                  .attr("transform", function (d) {
-                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                  })
+                  .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
                   .text(function (d) { return d.text; })
-
               }
-
 
               layoutUp.start();
               layoutDown.start();
 
               console.log(data);
+            };
+
+            scope.addInput = function(d) {
+              var input = element.find('input');
+
             };
 
             scope.source().then(function (data) {

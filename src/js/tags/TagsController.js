@@ -9,15 +9,14 @@ module.exports = function (app) {
       })
     };
 
-    $scope.myOnClickFunction = function(element) {
+    $scope.clickTag = function(element) {
+
       console.log(element)
     };
 
-    $scope.myOnHoverFunction = function(element) {
+    $scope.hoverTag = function(element) {
       console.log(element)
     };
-
-
 
   }]);
 };
