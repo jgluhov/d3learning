@@ -2,4 +2,5 @@
   h1(ng-bind="greeting")
 
 .tags-content
-  tags(source='loadTags()' on-click="clickTag(element)" on-hover="hoverTag(element)" on-search='searchTag(text)' data='data')
+  tags(on-click="clickTag(element)" , on-hover="hoverTag(element)", on-search="searchTag(text)",
+    source='loadTags(text)', data="data", limit='20')

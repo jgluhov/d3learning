@@ -2,6 +2,25 @@
 
 module.exports = function (app) {
 
+  app.directive('focus',
+    function($timeout) {
+      return {
+        scope : {
+          trigger : '@focus'
+        },
+        link : function(scope, element) {
+          scope.$watch('trigger', function(value) {
+            if (value === "true") {
+              $timeout(function() {
+                element[0].focus();
+              });
+            }
+          });
+        }
+      };
+    }
+  );
+
   app.directive('tags',
     ['$window', '$timeout', '$templateCache', '$compile',
       function ($window, $timeout, $templateCache, $compile) {
@@ -10,6 +29,7 @@ module.exports = function (app) {
           scope: {
             source: '&',
             data: '=',
+            limit: '=',
             // EventCallbacks
             onClick: "&",
             onHover: "&",
@@ -17,10 +37,6 @@ module.exports = function (app) {
           },
           controller: function ($scope) {
             $scope.tags = '';
-
-            $scope.change = function (text) {
-              console.log(text)
-            };
 
             $scope.search = function (text) {
               console.log(text)
@@ -33,9 +49,11 @@ module.exports = function (app) {
                 $scope.tags = text
               })
             }
-          }
-          ,
+          },
           link: function (scope, element, attrs) {
+            var limit = 0;
+            angular.isDefined(scope.limit) == true ? limit = scope.limit : limit = 20;
+
             var svg = d3.select(element[0])
               .append("svg")
               .style('width', '100%').style('height', '100%')
@@ -58,7 +76,7 @@ module.exports = function (app) {
 
             // Browser onresize event
             $window.onresize = debouncer(function ($event) {
-              scope.source().then(function (data) {
+              scope.source({ element: ''}).then(function (data) {
                 scope.render(data);
               });
               scope.$apply();
@@ -66,9 +84,9 @@ module.exports = function (app) {
 
             scope.render = function (data) {
               // If we don't pass any data, return out of the element
-              if (!data) return;
+              if (_.isEmpty(data)) return;
 
-              data = _.chunk(data, data.length / 2);
+              data = _.chunk(data, limit / 2);
 
               var w = element.parent()[0].clientWidth;
               var h = element.parent()[0].clientHeight;
@@ -148,7 +166,7 @@ module.exports = function (app) {
                 .rotate(function () { return 0; })
                 .font("Ubuntu")
                 .fontSize(function (d) { return d.size; })
-                .on("end", drawDown);
+                .on("end", drawDown)
 
               function drawDown(words) {
                 d3.select(".tags > .down")
@@ -191,10 +209,20 @@ module.exports = function (app) {
               layoutDown.start();
             };
 
+            scope.change = function (text) {
+              if(_.isEmpty(text) && (angular.isDefined(scope.data) && scope.data.length > 2)) {
+                scope.render(_.shuffle(scope.data));
+              } else {
+                scope.source({text: text}).then(function (data) {
+                  scope.render(data);
+                });
+              }
+            };
+
             if (angular.isDefined(scope.data) && scope.data.length > 2) {
               scope.render(_.shuffle(scope.data));
             } else {
-              scope.source().then(function (data) {
+              scope.source({ element: ''}).then(function (data) {
                 scope.render(data);
               });
             }
