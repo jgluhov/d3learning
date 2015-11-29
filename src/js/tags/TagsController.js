@@ -29,9 +29,10 @@ module.exports = function (app) {
       { name: "Ужасно", power: negative },
       { name: "Безвкусно", power: negative }
     ];
-
-    $scope.loadTags = function() {
-      return $http.get(constants.production + 'emotions?lang_code=en&limit=10&token=' + constants.token).then(function(res) {
+    
+    $scope.loadTags = function(name) {
+      if(_.isUndefined(name)) name = '';
+      return $http.get(constants.production + 'emotions?cloud=true&name=' + name + '&lang_code=ru&limit=20&token=' + constants.token).then(function(res) {
         return res.data;
       })
     };

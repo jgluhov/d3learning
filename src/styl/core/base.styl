@@ -1,6 +1,13 @@
 .tags-content
-  ::selection
-    background #667580
+  .up, .down
+    ::selection
+      background transparent
+  .up, .down
+    ::-moz-selection
+      background transparent
 
+&.uk-form
+  ::selection
+    background bg-color
   ::-moz-selection
-    background #667580
+    background bg-color

@@ -1,5 +1,6 @@
 .uk-form-icon
   input
+    color input-color!important
     &.tm-form-cloud
       position relative
       width 100%
@@ -8,11 +9,11 @@
       height 60px !important
       line-height 30px
       +placeholder()
-        color #cfcfcf
+        color placeholder-color
     &:focus
       background-color rgb(249, 249, 249)!important
       +placeholder()
-        color #b5b5b5
+        color placeholder-color
 
   .uk-icon-right
     margin-left -40px
