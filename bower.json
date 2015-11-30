@@ -25,7 +25,8 @@
     "uikit": "~2.23.0",
     "d3": "~3.5.9",
     "d3-cloud": "https://github.com/jasondavies/d3-cloud.git#~1.2.1",
-    "ng-resize": "https://github.com/danmasta/ng-resize.git#~1.2.0"
+    "ng-resize": "https://github.com/danmasta/ng-resize.git#~1.2.0",
+    "angular-clear-input": "https://github.com/dcohenb/angular-clear-input.git"
   },
   "devDependencies": {
     "lodash": "~3.10.1"

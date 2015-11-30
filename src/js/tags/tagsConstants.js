@@ -1,10 +1,10 @@
 module.exports = function(app) {
   app.constant('tagsConstant', {
     language: {
-      default: 'EN'
+      default: 'RU'
     },
     tags: {
-      limit: 10
+      limit: 20
     }
   })
 };

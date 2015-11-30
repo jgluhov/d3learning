@@ -10,7 +10,6 @@ module.exports = function (app) {
             source: '&',
             data: '=',
             limit: '=',
-            language: '=',
             // EventCallbacks
             onClick: "&",
             onHover: "&",
@@ -52,8 +51,7 @@ module.exports = function (app) {
             angular.isDefined(scope.data) == true && _.isArray(scope.data) == true ?
               data = _.shuffle(scope.data) : data = [];
 
-            angular.isDefined(scope.language) == true && !_.isEmpty(scope.language) == true ?
-              language = scope.language : language = tagsConstant.language.default.toLowerCase();
+            language = tagsConstant.language.default.toLowerCase();
 
             var svg = d3.select(element[0])
               .append("svg")
