@@ -50,9 +50,7 @@ module.exports = function (app) {
                 color = d3.scale.category20(),
               // our xScale
                 xScale = d3.scale.linear()
-                  .domain([0, d3.max(data, function (d) {
-                    return d.score;
-                  })])
+                  .domain([0, d3.max(data, function (d) { return d.score; })])
                   .range([0, width]);
 
               // set the height based on the calculations above

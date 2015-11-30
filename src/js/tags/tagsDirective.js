@@ -1,35 +1,16 @@
 'use strict';
 
 module.exports = function (app) {
-
-  app.directive('focus',
-    function($timeout) {
-      return {
-        scope : {
-          trigger : '@focus'
-        },
-        link : function(scope, element) {
-          scope.$watch('trigger', function(value) {
-            if (value === "true") {
-              $timeout(function() {
-                element[0].focus();
-              });
-            }
-          });
-        }
-      };
-    }
-  );
-
   app.directive('tags',
-    ['$window', '$timeout', '$templateCache', '$compile',
-      function ($window, $timeout, $templateCache, $compile) {
+    ['$window', '$timeout', '$templateCache', '$compile', 'tagsConstant', 'tagsService',
+      function ($window, $timeout, $templateCache, $compile, tagsConstant, tagsService) {
         return {
           restrict: 'EA',
           scope: {
             source: '&',
             data: '=',
             limit: '=',
+            language: '=',
             // EventCallbacks
             onClick: "&",
             onHover: "&",
@@ -43,7 +24,7 @@ module.exports = function (app) {
             };
 
             $scope.click = function (tag) {
-              $scope.$apply(function() {
+              $scope.$apply(function () {
                 $scope.tags = parse($scope.tags, tag);
               })
             };
@@ -51,19 +32,28 @@ module.exports = function (app) {
             function parse(text, tag) {
               var trimmed = _.trim(tag.text, '# ').toLowerCase();
 
-              if(_.isEmpty(text)) return trimmed;
+              if (_.isEmpty(text)) return trimmed;
               if (text.indexOf(trimmed) > -1) return text;
 
               var tags = text.split(',');
               tags.push(trimmed);
 
-              return _.map(tags, function(t) { return _.trim(t); }).join(', ');
+              return _.map(tags, function (t) {
+                return _.trim(t);
+              }).join(', ');
             }
 
           },
           link: function (scope, element, attrs) {
-            var limit = 0;
-            angular.isDefined(scope.limit) == true ? limit = scope.limit : limit = 20;
+            var limit, data, language;
+
+            angular.isDefined(scope.limit) == true ? limit = scope.limit : limit = tagsConstant.tags.max;
+
+            angular.isDefined(scope.data) == true && _.isArray(scope.data) == true ?
+              data = _.shuffle(scope.data) : data = [];
+
+            angular.isDefined(scope.language) == true && !_.isEmpty(scope.language) == true ?
+              language = scope.language : language = tagsConstant.language.default.toLowerCase();
 
             var svg = d3.select(element[0])
               .append("svg")
@@ -74,30 +64,16 @@ module.exports = function (app) {
             svg.append("g").attr("class", "input");
             svg.append("g").attr("class", "down");
 
-            function debouncer(func, timeout) {
-              var timeoutID, timeout = timeout || 300;
-              return function () {
-                var scope = this, args = arguments;
-                clearTimeout(timeoutID);
-                timeoutID = setTimeout(function () {
-                  func.apply(scope, Array.prototype.slice.call(args));
-                }, timeout);
-              }
-            }
-
             // Browser onresize event
-            $window.onresize = debouncer(function ($event) {
-              scope.source({ element: ''}).then(function (data) {
-                scope.render(data);
-              });
+            $window.onresize = tagsService.debouncer(function ($event) {
+              scope.display();
               scope.$apply();
             });
 
             scope.render = function (data) {
-              // If we don't pass any data, return out of the element
               if (_.isEmpty(data)) return;
 
-              data = _.chunk(data, limit / 2);
+              data = _.chunk(data, data.length / 2);
 
               var w = element.parent()[0].clientWidth;
               var h = element.parent()[0].clientHeight;
@@ -111,7 +87,6 @@ module.exports = function (app) {
                 .attr("width", w)
                 .append("xhtml:body")
                 .style("padding-top", h / 2 - 20 + "px")
-                .style("width", "uk-width-8-10")
                 .attr("class", "uk-container-center");
 
               element.find('body').append($compile($templateCache.get('cloud-input-template'))(scope));
@@ -122,13 +97,9 @@ module.exports = function (app) {
                   return {text: '# ' + d.name.toUpperCase(), size: 15 + Math.random() * 15, power: d.power};
                 }))
                 .padding(5)
-                .rotate(function () {
-                  return 0;
-                })
+                .rotate(function () { return 0; })
                 .font("Ubuntu")
-                .fontSize(function (d) {
-                  return d.size;
-                })
+                .fontSize(function (d) { return d.size; })
                 .on("end", drawUp);
 
               function drawUp(words) {
@@ -140,32 +111,22 @@ module.exports = function (app) {
                   .selectAll("text")
                   .data(words)
                   .enter().append("text")
-                  .style("font-size", function (d) {
-                    return d.size + "px";
-                  })
+                  .style("font-size", function (d) { return d.size + "px"; })
                   .style("font-family", "Ubuntu")
-                  .style("fill", function (d) {
-                    return d.power >= 0 ? '#ffffff' : '#faab9d';
-                  })
+                  .style("fill", function (d) { return d.power >= 0 ? '#ffffff' : '#faab9d'; })
                   .on("click", function (d) {
                     scope.click(d);
                     scope.onClick({element: d});
                   })
-                  .on("mouseover", function (d) {
-                    scope.onHover({element: d});
-                  })
+                  .on("mouseover", function (d) { scope.onHover({element: d}); })
                   .style("cursor", "pointer")
                   .style("font-weight", "100")
                   .style("opacity", 1e-6)
                   .transition()
                   .duration(1000).style("opacity", 1)
                   .attr("text-anchor", "middle")
-                  .attr("transform", function (d) {
-                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                  })
-                  .text(function (d) {
-                    return d.text;
-                  })
+                  .attr("transform", function (d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+                  .text(function (d) { return d.text; })
               }
 
               var layoutDown = d3.layout.cloud()
@@ -188,20 +149,14 @@ module.exports = function (app) {
                   .selectAll("text")
                   .data(words)
                   .enter().append("text")
-                  .style("font-size", function (d) {
-                    return d.size + "px";
-                  })
+                  .style("font-size", function (d) { return d.size + "px"; })
                   .style("font-family", "Ubuntu")
-                  .style("fill", function (d) {
-                    return d.power >= 0 ? '#ffffff' : '#faab9d';
-                  })
+                  .style("fill", function (d) { return d.power >= 0 ? '#ffffff' : '#faab9d'; })
                   .on("click", function (d) {
                     scope.click(d);
                     scope.onClick({element: d});
                   })
-                  .on("mouseover", function (d) {
-                    scope.onHover({element: d});
-                  })
+                  .on("mouseover", function (d) { scope.onHover({element: d}); })
                   .style("cursor", "pointer")
                   .style("font-weight", "100")
                   .style("opacity", 1e-6)
@@ -211,9 +166,7 @@ module.exports = function (app) {
                   .attr("transform", function (d) {
                     return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
                   })
-                  .text(function (d) {
-                    return d.text;
-                  })
+                  .text(function (d) { return d.text; })
               }
 
               layoutUp.start();
@@ -221,22 +174,21 @@ module.exports = function (app) {
             };
 
             scope.change = function (text) {
-              if(_.isEmpty(text) && (angular.isDefined(scope.data) && scope.data.length > 2)) {
-                scope.render(_.shuffle(scope.data));
-              } else {
-                scope.source({text: text}).then(function (data) {
-                  scope.render(data);
-                });
-              }
+              scope.display(text);
             };
 
-            if (angular.isDefined(scope.data) && scope.data.length > 2) {
-              scope.render(_.shuffle(scope.data));
-            } else {
-              scope.source({ text: ''}).then(function (data) {
-                scope.render(data);
-              });
-            }
+            scope.display = function (text) {
+              if (_.isUndefined(text)) _.isEmpty(scope.tags) == true ? text = '' : text = scope.tags;
+
+              if (!_.isEmpty(data)) return scope.render(data);
+
+              scope.source({text: text, language: language, limit: limit})
+                .then(function (data) {
+                  scope.render(data);
+                });
+            };
+
+            scope.display();
           }
         }
       }]);
